@@ -9,22 +9,27 @@
   - Supabase (RLS, buenas prácticas de seguridad).
   - ShadCN UI.
   - HeroUI para componentes visuales complementarios.
+  - React Query (TanStack Query) para manejo de datos.
+  - Zod para validación y modelado de datos.
 - Tu prioridad es mantener el código limpio, coherente, fácil de mantener y entendible.
 
 ## Principios generales
 
 1. **No actuar sin permiso**
+
    - No añadas rutas, páginas, features, hooks o servicios nuevos sin que el usuario lo pida explícitamente.
    - No instales nuevas dependencias sin consultarlo antes.
    - No borres ni renombres archivos existentes sin explicarlo y pedir confirmación.
    - Ante dudas entre varias soluciones, propone brevemente las opciones y espera la elección del usuario.
 
 2. **Alcance de las tareas**
+
    - Limita tus cambios a lo que el usuario pida en cada mensaje.
    - Si una petición implica varios pasos, explícales al usuario y confirma que quiere que ejecutes todo el plan.
-   - No generes contenido “extra” (páginas de ejemplo, datos de demo, etc.) si el usuario no lo pide.
+   - No generes contenido "extra" (páginas de ejemplo, datos de demo, etc.) si el usuario no lo pide.
 
 3. **Estilo de código**
+
    - TypeScript en modo estricto, sin `any` no tipado.
    - Props de componentes SIEMPRE tipadas.
    - Evita duplicar código: extrae utilidades y componentes reutilizables.
@@ -36,6 +41,7 @@
      - Ficheros: `kebab-case.tsx` / `kebab-case.ts`.
 
 4. **Estilos y UI**
+
    - Tailwind CSS como sistema de estilos principal.
    - Evitar estilos inline, excepto casos muy puntuales.
    - Utilizar tokens designados en Tailwind (colores, tipografías, spacing).
@@ -49,19 +55,51 @@
      - Labels asociados a inputs.
 
 5. **Next.js y componentes**
+
    - Usar Next App Router en `src/app`.
    - Server Components por defecto; Client Components solo cuando se requiera estado, efectos o APIs del navegador.
    - Siempre marcar los Client Components con `"use client"` en la parte superior.
    - No mezclar lógica de dominio compleja en componentes de presentación; extraerla a `services` o hooks.
 
-6. **Supabase y capa de datos**
+6. **Supabase, React Query y capa de datos**
+
    - Inicializar Supabase en `src/lib/supabase/` (cliente server y cliente client).
    - No hacer llamadas directas a Supabase dentro de componentes de presentación.
    - Usar servicios en `features/<feature>/services/` para agrupar la lógica de llamadas a Supabase.
    - Mantener tipos claros para las entidades que llegan desde la base de datos.
    - Respetar el contexto de seguridad (no exponer claves ni lógica sensible en Client Components).
+   - React Query (TanStack Query):
+     - Para lecturas de datos en Client Components, usar siempre React Query en lugar de `useEffect` + `fetch` o llamadas directas a Supabase.
+     - Definir hooks de datos por feature en `features/<feature>/hooks/`, con nombres como:
+       - `useProductsQuery`, `useProductByIdQuery`, `useCreateProductMutation`, etc.
+     - Usar keys descriptivas y estructuradas:
+       - Ejemplo: `['products', 'list', { status, page }]`, `['payments', 'by-id', paymentId]`.
+     - En mutaciones:
+       - Usar `useMutation`.
+       - En `onSuccess`, invalidar o refrescar las queries relacionadas con `queryClient.invalidateQueries({ queryKey: [...] })`.
+     - Manejar estados de `isLoading`, `isError` y `data` de forma explícita en los componentes, manteniendo la UI consistente (spinners, mensajes de error, vacíos).
+     - Cuando sea necesario SSR/SSG:
+       - Puedes hacer fetch en Server Components con Supabase server-side y luego hidratar React Query si tiene sentido, pero coméntalo primero al usuario antes de introducir patrones avanzados.
 
-7. **Arquitectura de carpetas**
+7. **Validación y modelado con Zod**
+
+   - Usar Zod como sistema principal de validación y modelado de datos tanto en formularios como en datos que provienen de Supabase u otras APIs cuando sean críticos.
+   - Crear esquemas por feature, por ejemplo:
+     - `features/<feature>/schemas/` o `features/<feature>/validation.ts`.
+   - Derivar tipos de TypeScript desde Zod:
+     - Usar `z.infer<typeof schema>` y evitar duplicar interfaces manuales que representen lo mismo.
+   - Aplicaciones típicas:
+     - Formularios de autenticación (login, registro, cambio de contraseña).
+     - Formularios de creación/edición de productos.
+     - Formularios de pagos, facturación y datos sensibles.
+     - Formularios de contacto u otros donde se persistan datos.
+   - Validar datos de entrada ANTES de llamar a servicios:
+     - El componente de UI pasa los valores a una función/hook que valida con Zod.
+     - Si hay errores, se devuelven mensajes claros al componente para mostrarlos en la UI.
+   - Siempre que se definan payloads para mutaciones (ej. creación de producto, actualización de perfil), modelarlos primero con Zod y reutilizar ese esquema en toda la cadena (formulario → servicio → tests).
+   - Si ya existe una librería de formularios (por ejemplo, React Hook Form), integrarla con Zod mediante el resolver correspondiente siempre que el usuario lo haya autorizado (no instales librerías nuevas sin permiso).
+
+8. **Arquitectura de carpetas**
 
 Arquitectura objetivo:
 
@@ -72,42 +110,48 @@ Arquitectura objetivo:
   - Una carpeta por feature de negocio (por ejemplo: `auth`, `landing`, `dashboard`, `payments`, etc.).
   - Dentro de cada feature:
     - `components/` -> componentes específicos del feature.
-    - `hooks/` -> hooks específicos del feature.
+    - `hooks/` -> hooks específicos del feature (incluyendo hooks de React Query).
     - `services/` -> lógica de negocio y llamadas a Supabase u otros servicios.
-    - `types.ts` -> tipos del feature.
+    - `schemas/` o `validation.ts` -> esquemas Zod del feature cuando aplique.
+    - `types.ts` -> tipos del feature (cuando no provengan directamente de Zod).
     - `constants.ts` -> constantes del feature.
 - `src/shared/`
   - `ui/` -> componentes de UI agnósticos al dominio (wrappers de ShadCN y HeroUI, botones genéricos, cards genéricas, layouts genéricos, etc.).
   - `hooks/` -> hooks reutilizables (por ejemplo `useMediaQuery`, `useScrollToSection`, etc.).
   - `lib/` -> utilidades generales (formatos de fecha, helpers, etc.).
 - `src/lib/`
-  - Configuración global (por ejemplo: `supabase`, `auth`, `logger`, etc.).
+  - Configuración global (por ejemplo: `supabase`, `auth`, `logger`, React Query client, etc.).
 - `src/styles/`
   - Estilos globales de Tailwind y otros CSS globales.
 - `src/types/`
   - Tipos globales compartidos.
 
 Reglas:
+
 - No crear carpetas nuevas fuera de esta estructura sin consultarlo.
 - Si detectas que un componente es reutilizable, muévelo a `src/shared/ui/` previo aviso al usuario.
 - Evita componentes gigantes: si un componente empieza a manejar demasiadas responsabilidades, proponle al usuario dividirlo.
 
-8. **Buenas prácticas adicionales**
+9. **Buenas prácticas adicionales**
+
    - Sin código muerto: si dejas funciones/helpers sin usar, explica por qué o elimínalos.
    - Evita console.log en código final; usa logs controlados solo si el usuario lo permite.
    - Mantén los imports ordenados y sin imports sin usar.
    - No dejes TODOs genéricos; si es necesario, escribe TODOs concretos y coméntale al usuario.
+   - Evita estados duplicados:
+     - Si un dato ya viene de React Query, no lo replique en otro `useState` salvo que haya una razón clara (por ejemplo, formularios controlados).
 
-9. **Comunicación con el usuario**
-   - Antes de grandes cambios, explica:
-     - Qué archivos vas a tocar.
-     - Qué vas a agregar, modificar o eliminar.
-   - Después de los cambios:
-     - Resume brevemente lo hecho.
-     - Indica cómo probarlo (comando de dev, ruta a visitar, etc.).
-   - Pregunta siempre que algo no esté claro en el requerimiento.
+10. **Comunicación con el usuario**
 
-10. **Prohibiciones**
+    - Antes de grandes cambios, explica:
+      - Qué archivos vas a tocar.
+      - Qué vas a agregar, modificar o eliminar.
+    - Después de los cambios:
+      - Resume brevemente lo hecho.
+      - Indica cómo probarlo (comando de dev, ruta a visitar, etc.).
+    - Pregunta siempre que algo no esté claro en el requerimiento.
+
+11. **Prohibiciones**
     - No añadir páginas, rutas, componentes, hooks, servicios, librerías o configuraciones que el usuario no haya pedido.
     - No tomar decisiones arquitectónicas grandes sin confirmación.
     - No modificar comportamiento crítico (auth, pagos, etc.) sin explicar claramente el impacto primero.
