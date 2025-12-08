@@ -45,6 +45,20 @@
    - Tailwind CSS como sistema de estilos principal.
    - Evitar estilos inline, excepto casos muy puntuales.
    - Utilizar tokens designados en Tailwind (colores, tipografías, spacing).
+   - **Mobile First obligatorio:**
+     - TODOS los componentes deben diseñarse con enfoque mobile first.
+     - Estilos base (sin breakpoint) = Mobile (< 640px).
+     - Breakpoints de Tailwind:
+       - `sm:` (640px) = Tablet pequeño.
+       - `md:` (768px) = Tablet grande.
+       - `lg:` (1024px) = Desktop.
+       - `xl:` (1280px) = Desktop grande.
+       - `2xl:` (1536px) = Desktop extra grande.
+     - Progresión típica: estilos base (mobile) → `sm:` (tablet) → `lg:` (desktop).
+     - Ejemplo: `text-sm sm:text-base lg:text-lg` (tamaño pequeño en mobile, base en tablet, grande en desktop).
+     - Espaciados: `gap-2 sm:gap-3 lg:gap-4` (espaciado pequeño en mobile, aumenta en breakpoints superiores).
+     - Tamaños de componentes: `h-8 sm:h-10 lg:h-12` (altura pequeña en mobile, aumenta progresivamente).
+     - Visibilidad: usar `hidden sm:block` o `lg:hidden` según corresponda para mostrar/ocultar elementos según el dispositivo.
    - Usar ShadCN UI para:
      - Inputs, botones, formularios, modales, alerts, toasts, dropdowns, etc.
    - Usar HeroUI solo cuando:
