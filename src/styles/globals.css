@@ -5,10 +5,10 @@
 @layer base {
   :root {
     /* Tokens de marca - Paleta única y obligatoria */
-    --color-bg-base: #FFFFFF;
-    --color-text-base: #0F172A;
-    --color-accent-primary: #FFBD59;
-    --color-accent-support: #E17480;
+    --color-bg-base: #ffffff;
+    --color-text-base: #0f172a;
+    --color-accent-primary: #ffbd59;
+    --color-accent-support: #e17480;
 
     /* Variables de ShadCN UI - Mantenidas temporalmente para compatibilidad */
     --background: 0 0% 100%;
@@ -63,5 +63,12 @@
   body {
     @apply bg-base text-brand;
   }
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-heading;
+  }
 }
-

@@ -19,6 +19,10 @@ const config = {
       },
     },
     extend: {
+      fontFamily: {
+        sans: ["var(--font-inter)", "sans-serif"],
+        heading: ["var(--font-geist-sans)", "sans-serif"],
+      },
       colors: {
         /* Tokens de marca - Paleta única y obligatoria */
         base: "var(--color-bg-base)",
