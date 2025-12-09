@@ -68,6 +68,36 @@
      - `focus-visible` y estados hover/active adecuados.
      - Labels asociados a inputs.
 
+4.1. **Soporte de tema (Light/Dark) - OBLIGATORIO**
+
+   - **TODOS los componentes UI** que se creen o modifiquen DEBEN soportar el cambio de tema (light/dark) con transiciones suaves.
+   - Aplicar la clase `theme-transition` a todos los elementos que cambien de color durante el cambio de tema:
+     - Elementos con colores de fondo, texto, bordes.
+     - Inputs, botones, cards, modales, dropdowns, etc.
+   - Usar colores de Tailwind que respeten el sistema de tema:
+     - `bg-background`, `text-foreground`, `border-border`, `bg-muted`, etc.
+     - Evitar colores hardcodeados que no cambien con el tema.
+   - Para componentes con animaciones durante el cambio de tema:
+     - Usar el hook `useTheme` de `@/shared/hooks/use-theme` para acceder al estado `isTransitioning`.
+     - Aplicar animaciones sutiles con Framer Motion cuando sea apropiado (fade, scale, etc.).
+     - Usar el componente `ThemeTransitionWrapper` de `@/shared/ui/theme-transition-wrapper` si se necesita envolver elementos con animaciones específicas.
+   - Ejemplo de implementación:
+     ```tsx
+     // ✅ Correcto: Componente con soporte de tema
+     <div className="bg-background text-foreground border-border theme-transition">
+       <button className="bg-muted hover:bg-muted/80 theme-transition">
+         Click me
+       </button>
+     </div>
+     
+     // ❌ Incorrecto: Colores hardcodeados sin soporte de tema
+     <div className="bg-white text-black">
+       <button className="bg-gray-200">Click me</button>
+     </div>
+     ```
+   - Las transiciones deben ser suaves (duración de 0.4s con easing `cubic-bezier(0.4, 0, 0.2, 1)`).
+   - Verificar visualmente que el componente funcione correctamente en ambos temas antes de considerarlo completo.
+
 5. **Next.js y componentes**
 
    - Usar Next App Router en `src/app`.
