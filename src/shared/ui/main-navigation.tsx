@@ -1,28 +1,31 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import Link from "next/link"
-import { Shield, Search, Menu, X } from "lucide-react"
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
+import { useState } from "react";
+import Link from "next/link";
+import { Shield, Search, Menu, X } from "lucide-react";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
 export function MainNavigation() {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const navigationLinks = [
     { href: "/", label: "Inicio" },
     { href: "/productos", label: "Productos" },
     { href: "/sobre-nosotros", label: "Sobre Nosotros" },
     { href: "/contacto", label: "Contacto" },
-  ]
+  ];
 
   return (
     <nav className="sticky top-0 z-50 w-full border-b border-border bg-base/95 backdrop-blur supports-[backdrop-filter]:bg-base/80">
       <div className="container flex h-14 sm:h-16 items-center justify-between px-3 sm:px-4 lg:px-6">
         {/* Lado izquierdo: Avatar + Nombre - Mobile first */}
-        <div className="flex items-center gap-2 sm:gap-3">
-          <Link href="/" className="flex items-center gap-2 sm:gap-3 hover:opacity-80 transition-opacity">
+        <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
+          <Link
+            href="/"
+            className="flex items-center gap-2 sm:gap-3 hover:opacity-80 transition-opacity"
+          >
             <Avatar className="h-8 w-8 sm:h-10 sm:w-10">
               <AvatarImage src="/logo.png" alt="Richard3D Logo" />
               <AvatarFallback>R3D</AvatarFallback>
@@ -34,12 +37,12 @@ export function MainNavigation() {
         </div>
 
         {/* Centro: Links de navegación - Desktop only */}
-        <div className="hidden lg:flex items-center gap-4 xl:gap-6">
+        <div className="hidden lg:flex items-center justify-center gap-4 xl:gap-6 flex-1 px-4">
           {navigationLinks.map((link) => (
             <Link
               key={link.href}
               href={link.href}
-              className="text-sm xl:text-base font-medium text-brand hover:text-accent transition-colors"
+              className="relative text-sm font-medium text-foreground/80 tracking-tight transition-colors hover:text-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:ring-offset-base"
             >
               {link.label}
             </Link>
@@ -47,7 +50,7 @@ export function MainNavigation() {
         </div>
 
         {/* Lado derecho: Search bar + Dashboard link + Mobile menu button */}
-        <div className="flex items-center gap-2 sm:gap-3">
+        <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
           {/* Search bar - Tablet and Desktop */}
           <div className="relative hidden sm:block">
             <Search className="absolute left-2 sm:left-3 top-1/2 h-3.5 w-3.5 sm:h-4 sm:w-4 -translate-y-1/2 text-muted-foreground" />
@@ -110,7 +113,7 @@ export function MainNavigation() {
               <Link
                 key={link.href}
                 href={link.href}
-                className="block text-base font-medium text-brand hover:text-accent transition-colors py-2"
+                className="block py-2 text-sm font-medium text-foreground/80 tracking-tight transition-colors hover:text-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:ring-offset-base"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 {link.label}
@@ -120,6 +123,5 @@ export function MainNavigation() {
         </div>
       )}
     </nav>
-  )
+  );
 }
-
