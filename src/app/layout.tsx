@@ -2,7 +2,7 @@ import type { Metadata } from "next"
 import { Inter } from "next/font/google"
 import { GeistSans } from "geist/font/sans"
 import "@/styles/globals.css"
-import { MainNavigation } from "@/shared/ui/main-navigation"
+import { Navbar } from "@/features/navigation"
 
 const inter = Inter({ 
   subsets: ["latin"],
@@ -22,7 +22,7 @@ export default function RootLayout({
   return (
     <html lang="es">
       <body className={`${inter.variable} ${GeistSans.variable} font-sans`}>
-        <MainNavigation />
+        <Navbar />
         {children}
       </body>
     </html>

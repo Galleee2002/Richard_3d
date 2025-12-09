@@ -5,8 +5,8 @@
 @layer base {
   :root {
     /* Tokens de marca - Paleta única y obligatoria */
-    --color-bg-base: #ffffff;
-    --color-text-base: #0f172a;
+    --color-bg-base: #0f172a;
+    --color-text-base: #ffffff;
     --color-accent-primary: #ffbd59;
     --color-accent-support: #e17480;
 
