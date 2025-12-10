@@ -2,16 +2,13 @@
 
 import { useParams } from "next/navigation";
 import { useProductByIdQuery } from "@/features/products/hooks/use-products";
-import { mockProducts } from "@/features/products/data/mock-products";
 import { ProductCardSkeleton } from "@/features/products/components/product-card-skeleton";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 import Image from "next/image";
 import { ArrowLeft, ShoppingCart, Package } from "lucide-react";
 import Link from "next/link";
 import { useInquiry } from "@/features/inquiry/inquiry-context";
 import type { Product as InquiryProduct } from "@/features/inquiry/types";
-import { useMemo } from "react";
 
 export default function ProductDetailPage() {
   const params = useParams();
@@ -19,25 +16,22 @@ export default function ProductDetailPage() {
   const { data: product, isLoading, error } = useProductByIdQuery(productId);
   const { addItem } = useInquiry();
 
-  // Si no hay datos de Supabase, buscar en mock
-  const displayProduct = useMemo(() => {
-    if (product) return product;
-    return mockProducts.find(p => p.id === productId);
-  }, [product, productId]);
-
   const handleAddToInquiry = () => {
-    if (!displayProduct) return;
-    
+    if (!product) return;
+
     const inquiryProduct: InquiryProduct = {
-      id: displayProduct.id,
-      name: displayProduct.name,
-      price: displayProduct.price,
-      imageUrl: displayProduct.images && displayProduct.images.length > 0 ? displayProduct.images[0] : undefined,
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      imageUrl:
+        product.images && product.images.length > 0
+          ? product.images[0]
+          : undefined,
     };
     addItem(inquiryProduct);
   };
 
-  if (isLoading && !displayProduct) {
+  if (isLoading) {
     return (
       <main className="min-h-screen bg-background theme-transition">
         <div className="container mx-auto px-4 py-8 sm:py-12 lg:py-16">
@@ -56,13 +50,14 @@ export default function ProductDetailPage() {
     );
   }
 
-  if (error && !displayProduct) {
+  if (error) {
     return (
       <main className="min-h-screen bg-background theme-transition">
         <div className="container mx-auto px-4 py-8 sm:py-12 lg:py-16">
           <div className="max-w-6xl mx-auto">
             <div className="p-4 rounded-md bg-destructive/10 border border-destructive text-destructive text-sm theme-transition">
-              Error al cargar el producto: {error instanceof Error ? error.message : "Error desconocido"}
+              Error al cargar el producto:{" "}
+              {error instanceof Error ? error.message : "Error desconocido"}
             </div>
           </div>
         </div>
@@ -70,16 +65,21 @@ export default function ProductDetailPage() {
     );
   }
 
-  if (!displayProduct) {
+  if (!product) {
     return (
       <main className="min-h-screen bg-background theme-transition">
         <div className="container mx-auto px-4 py-8 sm:py-12 lg:py-16">
           <div className="max-w-6xl mx-auto">
             <div className="text-center py-12">
               <Package className="h-12 w-12 mx-auto mb-4 text-muted-foreground theme-transition" />
-              <p className="text-muted-foreground theme-transition">Producto no encontrado</p>
+              <p className="text-muted-foreground theme-transition">
+                Producto no encontrado
+              </p>
               <Link href="/products">
-                <Button variant="outline" className="mt-4 border-border text-foreground hover:bg-muted theme-transition">
+                <Button
+                  variant="outline"
+                  className="mt-4 border-border text-foreground hover:bg-muted theme-transition"
+                >
                   Volver a productos
                 </Button>
               </Link>
@@ -90,8 +90,11 @@ export default function ProductDetailPage() {
     );
   }
 
-  const mainImage = displayProduct.images && displayProduct.images.length > 0 ? displayProduct.images[0] : null;
-  const stock = displayProduct.stock ?? 0;
+  const mainImage =
+    product.images && product.images.length > 0
+      ? product.images[0]
+      : null;
+  const stock = product.stock ?? 0;
   const isInStock = stock > 0;
 
   return (
@@ -115,7 +118,7 @@ export default function ProductDetailPage() {
               {mainImage ? (
                 <Image
                   src={mainImage}
-                  alt={displayProduct.name}
+                  alt={product.name}
                   fill
                   className="object-cover"
                   sizes="(max-width: 1024px) 100vw, 50vw"
@@ -132,10 +135,10 @@ export default function ProductDetailPage() {
             <div className="space-y-6">
               <div>
                 <h1 className="text-2xl sm:text-3xl lg:text-4xl font-heading font-bold text-foreground mb-4 theme-transition">
-                  {displayProduct.name}
+                  {product.name}
                 </h1>
                 <p className="text-3xl sm:text-4xl font-semibold text-accent mb-6 theme-transition">
-                  ${displayProduct.price.toFixed(2)}
+                  ${product.price.toFixed(2)}
                 </p>
               </div>
 
@@ -145,18 +148,18 @@ export default function ProductDetailPage() {
                     Descripción
                   </h2>
                   <p className="text-muted-foreground leading-relaxed theme-transition">
-                    {displayProduct.description}
+                    {product.description}
                   </p>
                 </div>
 
                 {/* Colores */}
-                {displayProduct.colors && displayProduct.colors.length > 0 && (
+                {product.colors && product.colors.length > 0 && (
                   <div>
                     <h2 className="text-lg font-semibold text-foreground mb-3 theme-transition">
                       Colores disponibles
                     </h2>
                     <div className="flex flex-wrap gap-2">
-                      {displayProduct.colors.map((color, index) => (
+                      {product.colors.map((color, index) => (
                         <span
                           key={index}
                           className="px-4 py-2 rounded-md bg-muted text-foreground text-sm border border-border theme-transition"
@@ -169,13 +172,13 @@ export default function ProductDetailPage() {
                 )}
 
                 {/* Medidas */}
-                {displayProduct.measurements && (
+                {product.measurements && (
                   <div>
                     <h2 className="text-lg font-semibold text-foreground mb-2 theme-transition">
                       Medidas
                     </h2>
                     <p className="text-muted-foreground theme-transition">
-                      {displayProduct.measurements}
+                      {product.measurements}
                     </p>
                   </div>
                 )}
@@ -186,12 +189,16 @@ export default function ProductDetailPage() {
                     Stock disponible
                   </h2>
                   <div className="flex items-center gap-2">
-                    <div className={`px-4 py-2 rounded-md font-semibold text-sm theme-transition ${
-                      isInStock 
-                        ? "bg-accent-support/10 dark:bg-accent-support/20 text-accent-support dark:text-accent-support/90 border border-accent-support/50 dark:border-accent-support/40" 
-                        : "bg-destructive/10 text-destructive border border-destructive/50"
-                    }`}>
-                      {isInStock ? `${stock} unidades disponibles` : "Sin stock"}
+                    <div
+                      className={`px-4 py-2 rounded-md font-semibold text-sm theme-transition ${
+                        isInStock
+                          ? "bg-accent-support/10 dark:bg-accent-support/20 text-accent-support dark:text-accent-support/90 border border-accent-support/50 dark:border-accent-support/40"
+                          : "bg-destructive/10 text-destructive border border-destructive/50"
+                      }`}
+                    >
+                      {isInStock
+                        ? `${stock} unidades disponibles`
+                        : "Sin stock"}
                     </div>
                   </div>
                 </div>
@@ -205,7 +212,9 @@ export default function ProductDetailPage() {
                 size="lg"
               >
                 <ShoppingCart className="h-5 w-5 mr-2" />
-                {isInStock ? "Añadir a lista de consultas" : "Producto sin stock"}
+                {isInStock
+                  ? "Añadir a lista de consultas"
+                  : "Producto sin stock"}
               </Button>
             </div>
           </div>
@@ -214,4 +223,3 @@ export default function ProductDetailPage() {
     </main>
   );
 }
-

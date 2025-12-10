@@ -3,26 +3,23 @@
 import { useProductsQuery } from "@/features/products/hooks/use-products";
 import { ProductCard } from "@/features/products/components/product-card";
 import { ProductCardSkeleton } from "@/features/products/components/product-card-skeleton";
-import { mockProducts } from "@/features/products/data/mock-products";
 import { Package } from "lucide-react";
 import { useMemo } from "react";
 
 export default function ProductsPage() {
   const { data: products, isLoading, error } = useProductsQuery();
-  
-  // Usar datos mock si no hay datos de Supabase o hay error
-  const displayProducts = products && products.length > 0 ? products : mockProducts;
 
   const productsByCategory = useMemo(() => {
-    return displayProducts.reduce((acc, product) => {
+    if (!products || products.length === 0) return {};
+    return products.reduce((acc, product) => {
       const category = product.category || "Sin categoría";
       if (!acc[category]) {
         acc[category] = [];
       }
       acc[category].push(product);
       return acc;
-    }, {} as Record<string, typeof displayProducts>);
-  }, [displayProducts]);
+    }, {} as Record<string, typeof products>);
+  }, [products]);
 
   const categories = Object.keys(productsByCategory).sort();
 

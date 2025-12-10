@@ -3,16 +3,12 @@
 import { useFeaturedProductsQuery } from "../hooks/use-products";
 import { ProductCard } from "./product-card";
 import { ProductCardSkeleton } from "./product-card-skeleton";
-import { mockFeaturedProducts } from "../data/mock-products";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
 export function FeaturedProductsSection() {
   const { data: products, isLoading, error } = useFeaturedProductsQuery();
-  
-  // Usar datos mock si no hay datos de Supabase o hay error
-  const displayProducts = products && products.length > 0 ? products : mockFeaturedProducts;
 
   return (
     <section className="py-12 sm:py-16 lg:py-20 bg-background theme-transition">
@@ -42,10 +38,16 @@ export function FeaturedProductsSection() {
                   <ProductCardSkeleton key={index} />
                 ))}
               </>
-            ) : (
-              displayProducts.map((product) => (
+            ) : products && products.length > 0 ? (
+              products.map((product) => (
                 <ProductCard key={product.id} product={product} />
               ))
+            ) : (
+              <div className="col-span-full text-center py-8">
+                <p className="text-muted-foreground theme-transition">
+                  No hay productos destacados disponibles
+                </p>
+              </div>
             )}
           </div>
 

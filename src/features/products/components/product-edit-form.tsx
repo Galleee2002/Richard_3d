@@ -11,6 +11,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Plus, X, Save, XCircle } from "lucide-react";
 import type { Product } from "../types";
+import { ProductColorField } from "./product-color-field";
 
 interface ProductEditFormProps {
   product: Product;
@@ -19,7 +20,6 @@ interface ProductEditFormProps {
 }
 
 export function ProductEditForm({ product, onCancel, onSuccess }: ProductEditFormProps) {
-  const [colors, setColors] = useState<string[]>(product.colors.length > 0 ? product.colors : [""]);
   const [images, setImages] = useState<string[]>(product.images && product.images.length > 0 ? product.images : [""]);
   const [videos, setVideos] = useState<string[]>(product.videos && product.videos.length > 0 ? product.videos : [""]);
   const [error, setError] = useState<string | null>(null);
@@ -31,6 +31,7 @@ export function ProductEditForm({ product, onCancel, onSuccess }: ProductEditFor
     register,
     handleSubmit,
     formState: { errors },
+    control,
     setValue,
     reset,
     watch,
@@ -60,23 +61,6 @@ export function ProductEditForm({ product, onCancel, onSuccess }: ProductEditFor
     setValue("category", product.category || "");
     setValue("stock", product.stock || 0);
   }, [product, setValue]);
-
-  const addColor = () => {
-    setColors([...colors, ""]);
-  };
-
-  const removeColor = (index: number) => {
-    const newColors = colors.filter((_, i) => i !== index);
-    setColors(newColors);
-    setValue("colors", newColors.filter((c) => c.trim() !== ""));
-  };
-
-  const updateColor = (index: number, value: string) => {
-    const newColors = [...colors];
-    newColors[index] = value;
-    setColors(newColors);
-    setValue("colors", newColors.filter((c) => c.trim() !== ""));
-  };
 
   const addImage = () => {
     setImages([...images, ""]);
@@ -181,44 +165,11 @@ export function ProductEditForm({ product, onCancel, onSuccess }: ProductEditFor
       </div>
 
       {/* Colores */}
-      <div className="space-y-2">
-        <Label className="text-foreground theme-transition">Colores</Label>
-        <div className="space-y-2">
-          {colors.map((color, index) => (
-            <div key={index} className="flex gap-2">
-              <Input
-                value={color}
-                onChange={(e) => updateColor(index, e.target.value)}
-                className="bg-background border-input text-foreground focus-visible:ring-2 focus-visible:ring-accent/50 focus-visible:border-accent/30 theme-transition"
-                placeholder="Ej: Rojo, Azul, Negro..."
-              />
-              {colors.length > 1 && (
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="icon"
-                  onClick={() => removeColor(index)}
-                  className="border-border text-foreground hover:bg-muted theme-transition"
-                >
-                  <X className="h-4 w-4 text-foreground theme-transition" />
-                </Button>
-              )}
-            </div>
-          ))}
-          <Button
-            type="button"
-            variant="outline"
-            onClick={addColor}
-            className="w-full sm:w-auto border-border text-foreground hover:bg-muted theme-transition"
-          >
-            <Plus className="h-4 w-4 mr-2 text-foreground theme-transition" />
-            Agregar Color
-          </Button>
-        </div>
-        {errors.colors && (
-          <p className="text-sm text-destructive theme-transition">{errors.colors.message}</p>
-        )}
-      </div>
+      <ProductColorField
+        control={control}
+        name="colors"
+        className="space-y-2"
+      />
 
       {/* Imágenes */}
       <div className="space-y-2">
