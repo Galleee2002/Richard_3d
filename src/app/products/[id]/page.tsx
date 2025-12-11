@@ -152,25 +152,6 @@ export default function ProductDetailPage() {
                   </p>
                 </div>
 
-                {/* Colores */}
-                {product.colors && product.colors.length > 0 && (
-                  <div>
-                    <h2 className="text-lg font-semibold text-foreground mb-3 theme-transition">
-                      Colores disponibles
-                    </h2>
-                    <div className="flex flex-wrap gap-2">
-                      {product.colors.map((color, index) => (
-                        <span
-                          key={index}
-                          className="px-4 py-2 rounded-md bg-muted text-foreground text-sm border border-border theme-transition"
-                        >
-                          {color}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
                 {/* Medidas */}
                 {product.measurements && (
                   <div>

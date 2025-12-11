@@ -99,14 +99,6 @@ export function ProductList() {
                     <span className="text-foreground theme-transition">{product.measurements}</span>
                   </div>
                 </div>
-                {product.colors && product.colors.length > 0 && (
-                  <div>
-                    <span className="text-muted-foreground theme-transition">Colores: </span>
-                    <span className="text-foreground theme-transition">
-                      {product.colors.join(", ")}
-                    </span>
-                  </div>
-                )}
                 {product.images && product.images.length > 0 && (
                   <div>
                     <span className="text-muted-foreground theme-transition">Imágenes: </span>

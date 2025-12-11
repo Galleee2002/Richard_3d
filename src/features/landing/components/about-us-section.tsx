@@ -20,17 +20,17 @@ const processCards: ProcessCard[] = [
     content: () => {
       return (
         <div className="space-y-3">
-          <p className="text-sm md:text-base text-black dark:text-white theme-transition">
+          <p className="text-sm md:text-base text-foreground theme-transition">
             Todo comienza con una idea. Nuestro equipo de diseñadores trabaja
             contigo para conceptualizar el producto, entendiendo tus necesidades
             y visión.
           </p>
-          <p className="text-sm md:text-base text-black dark:text-white theme-transition">
+          <p className="text-sm md:text-base text-foreground theme-transition">
             Utilizamos herramientas de diseño 3D avanzadas para crear modelos
             detallados que permiten visualizar el producto final antes de la
             producción.
           </p>
-          <p className="text-sm md:text-base text-black dark:text-white theme-transition">
+          <p className="text-sm md:text-base text-foreground theme-transition">
             En esta fase, definimos materiales, colores, dimensiones y todos los
             detalles que harán único tu producto.
           </p>
@@ -45,17 +45,17 @@ const processCards: ProcessCard[] = [
     content: () => {
       return (
         <div className="space-y-3">
-          <p className="text-sm md:text-base text-black dark:text-white theme-transition">
+          <p className="text-sm md:text-base text-foreground theme-transition">
             Una vez aprobado el diseño, pasamos a la fase de producción. Nuestro
             proceso utiliza tecnología de impresión 3D de última generación para
             garantizar la máxima calidad.
           </p>
-          <p className="text-sm md:text-base text-black dark:text-white theme-transition">
+          <p className="text-sm md:text-base text-foreground theme-transition">
             Cada pieza es fabricada con precisión milimétrica, utilizando
             materiales de primera calidad que aseguran durabilidad y
             resistencia.
           </p>
-          <p className="text-sm md:text-base text-black dark:text-white theme-transition">
+          <p className="text-sm md:text-base text-foreground theme-transition">
             Durante la producción, realizamos controles de calidad continuos
             para asegurar que cada producto cumpla con nuestros estándares de
             excelencia.
@@ -71,21 +71,16 @@ const processCards: ProcessCard[] = [
     content: () => {
       return (
         <div className="space-y-3">
-          <p className="text-sm md:text-base text-black dark:text-white theme-transition">
+          <p className="text-sm md:text-base text-foreground theme-transition">
             La fase final incluye el acabado detallado de cada pieza. Realizamos
             procesos de pulido, pintura y tratamiento de superficie según las
             especificaciones del diseño.
           </p>
-          <p className="text-sm md:text-base text-black dark:text-white theme-transition">
-            La fase final incluye el acabado detallado de cada pieza. Realizamos
-            procesos de pulido, pintura y tratamiento de superficie según las
-            especificaciones del diseño.
-          </p>
-          <p className="text-sm md:text-base text-black dark:text-white theme-transition">
+          <p className="text-sm md:text-base text-foreground theme-transition">
             Cada producto pasa por una inspección final exhaustiva antes de ser
             empaquetado con cuidado para su envío.
           </p>
-          <p className="text-sm md:text-base text-black dark:text-white theme-transition">
+          <p className="text-sm md:text-base text-foreground theme-transition">
             Nos aseguramos de que tu producto llegue en perfectas condiciones,
             listo para ser utilizado y disfrutado.
           </p>
@@ -149,7 +144,7 @@ export function AboutUsSection() {
             <motion.div
               layoutId={`card-${active.title}-${id}`}
               ref={ref}
-              className="w-full max-w-[500px] h-full md:h-fit md:max-h-[90%] flex flex-col bg-background border border-border sm:rounded-3xl overflow-hidden shadow-lg theme-transition"
+              className="w-full max-w-[500px] h-full md:h-fit md:max-h-[90%] flex flex-col bg-background border border-border sm:rounded-3xl overflow-y-auto scrollbar-hide shadow-lg theme-transition"
             >
               <motion.div layoutId={`image-${active.title}-${id}`}>
                 <img
@@ -161,30 +156,30 @@ export function AboutUsSection() {
                 />
               </motion.div>
 
-              <div className="flex flex-col flex-1 overflow-hidden">
-                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4 p-4 sm:p-6">
+              <div className="flex flex-col flex-1 min-h-0">
+                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4 p-4 sm:p-6 flex-shrink-0">
                   <div className="flex-1">
                     <motion.h3
                       layoutId={`title-${active.title}-${id}`}
-                      className="font-bold text-lg sm:text-xl text-black dark:text-white mb-2 theme-transition"
+                      className="font-bold text-lg sm:text-xl text-foreground mb-2 theme-transition"
                     >
                       {active.title}
                     </motion.h3>
                     <motion.p
                       layoutId={`description-${active.description}-${id}`}
-                      className="text-sm sm:text-base text-black dark:text-white theme-transition"
+                      className="text-sm sm:text-base text-foreground theme-transition"
                     >
                       {active.description}
                     </motion.p>
                   </div>
                 </div>
-                <div className="pt-0 relative px-4 sm:px-6 pb-6 flex-1 overflow-hidden">
+                <div className="pt-0 relative px-4 sm:px-6 pb-6 flex-1 min-h-0">
                   <motion.div
                     layout
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    className="text-foreground text-sm sm:text-base h-40 sm:h-fit pb-4 flex flex-col items-start gap-4 overflow-auto theme-transition [mask:linear-gradient(to_bottom,white,white,transparent)] [scrollbar-width:none] [-ms-overflow-style:none] [-webkit-overflow-scrolling:touch] dark:[mask:linear-gradient(to_bottom,black,black,transparent)]"
+                    className="text-foreground text-sm sm:text-base pb-4 flex flex-col items-start gap-4 theme-transition"
                   >
                     {active.content()}
                   </motion.div>
@@ -206,7 +201,7 @@ export function AboutUsSection() {
                   layoutId={`card-${card.title}-${id}`}
                   key={`card-${card.title}-${id}`}
                   onClick={() => setActive(card)}
-                  className="flex flex-col hover:bg-muted/50 rounded-xl cursor-pointer border border-border/50 hover:border-border transition-colors theme-transition overflow-hidden"
+                  className="flex flex-col bg-background hover:bg-muted/50 rounded-xl cursor-pointer border border-border/50 hover:border-border transition-colors theme-transition overflow-hidden"
                 >
                   <motion.div
                     layoutId={`image-${card.title}-${id}`}
@@ -223,21 +218,24 @@ export function AboutUsSection() {
                   <div className="p-4 sm:p-6 flex flex-col flex-1">
                     <motion.h3
                       layoutId={`title-${card.title}-${id}`}
-                      className="font-medium text-lg sm:text-xl text-black dark:text-white mb-2 theme-transition"
+                      className="font-medium text-lg sm:text-xl text-foreground mb-2 theme-transition"
                     >
                       {card.title}
                     </motion.h3>
                     <motion.p
                       layoutId={`description-${card.description}-${id}`}
-                      className="text-sm sm:text-base text-black dark:text-white mb-4 flex-1 theme-transition"
+                      className="text-sm sm:text-base text-foreground mb-4 flex-1 theme-transition"
                     >
                       {card.description}
                     </motion.p>
                     <motion.button
                       layoutId={`button-${card.title}-${id}`}
-                      className="px-4 py-2 text-sm sm:text-base rounded-full font-medium bg-primary text-primary-foreground hover:bg-primary/90 transition-colors theme-transition w-full"
+                      className="relative px-4 py-2 text-sm sm:text-base rounded-full font-medium bg-black dark:bg-white text-white dark:text-black w-full overflow-hidden group theme-transition"
                     >
-                      Ver más
+                      <span className="relative z-10 transition-colors duration-300 group-hover:text-black dark:group-hover:text-black">
+                        Ver más
+                      </span>
+                      <span className="absolute inset-0 bg-accent transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-out origin-left"></span>
                     </motion.button>
                   </div>
                 </motion.div>

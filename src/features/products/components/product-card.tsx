@@ -41,11 +41,6 @@ export function ProductCard({ product }: ProductCardProps) {
             <span className="text-accent font-semibold text-lg sm:text-xl theme-transition">
               ${product.price.toFixed(2)}
             </span>
-            {product.colors && product.colors.length > 0 && (
-              <span className="text-xs text-muted-foreground theme-transition">
-                {product.colors.length} {product.colors.length === 1 ? "color" : "colores"}
-              </span>
-            )}
           </div>
         </CardContent>
       </Card>

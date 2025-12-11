@@ -11,7 +11,6 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Plus, X, Save, XCircle } from "lucide-react";
 import type { Product } from "../types";
-import { ProductColorField } from "./product-color-field";
 
 interface ProductEditFormProps {
   product: Product;
@@ -41,7 +40,6 @@ export function ProductEditForm({ product, onCancel, onSuccess }: ProductEditFor
       name: product.name,
       description: product.description,
       price: product.price,
-      colors: product.colors,
       images: product.images || [],
       videos: product.videos || [],
       measurements: product.measurements,
@@ -54,7 +52,6 @@ export function ProductEditForm({ product, onCancel, onSuccess }: ProductEditFor
   const featuredValue = watch("featured");
 
   useEffect(() => {
-    setValue("colors", product.colors);
     setValue("images", product.images || []);
     setValue("videos", product.videos || []);
     setValue("featured", product.featured || false);
@@ -163,13 +160,6 @@ export function ProductEditForm({ product, onCancel, onSuccess }: ProductEditFor
           <p className="text-sm text-destructive theme-transition">{errors.price.message}</p>
         )}
       </div>
-
-      {/* Colores */}
-      <ProductColorField
-        control={control}
-        name="colors"
-        className="space-y-2"
-      />
 
       {/* Imágenes */}
       <div className="space-y-2">

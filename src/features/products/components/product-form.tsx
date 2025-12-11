@@ -17,7 +17,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Plus, X } from "lucide-react";
-import { ProductColorField } from "./product-color-field";
 
 export function ProductForm() {
   const [images, setImages] = useState<string[]>([""]);
@@ -40,7 +39,6 @@ export function ProductForm() {
     // pero react-hook-form espera tipos requeridos. El código funciona correctamente en runtime.
     resolver: zodResolver(productSchema),
     defaultValues: {
-      colors: [],
       images: [],
       videos: [],
       featured: false,
@@ -189,14 +187,6 @@ export function ProductForm() {
               </p>
             )}
           </div>
-
-          {/* Colores */}
-          <ProductColorField
-            // @ts-expect-error - Mismo problema de tipos entre Zod y react-hook-form
-            control={control}
-            name="colors"
-            className="space-y-2"
-          />
 
           {/* Imágenes */}
           <div className="space-y-2">

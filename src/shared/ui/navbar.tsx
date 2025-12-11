@@ -1,14 +1,22 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Search, User } from "lucide-react";
+import { Search, User, Menu } from "lucide-react";
 import { motion } from "framer-motion";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { ThemeToggle } from "@/shared/ui/theme-toggle";
 import { useTheme } from "@/shared/hooks/use-theme";
 import { cn } from "@/lib/utils";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 
 const navItems = [
   { label: "Inicio", href: "/" },
@@ -19,6 +27,7 @@ const navItems = [
 
 export function Navbar() {
   const { isTransitioning } = useTheme();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   return (
     <motion.nav
@@ -92,11 +101,11 @@ export function Navbar() {
             ))}
           </div>
 
-          {/* Búsqueda y Avatar - Derecha */}
-          <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
+          {/* Desktop: Búsqueda, Toggle y Avatar - Derecha */}
+          <div className="hidden lg:flex items-center gap-2 sm:gap-3 flex-shrink-0">
             {/* Barra de búsqueda */}
             <motion.div
-              className="relative hidden sm:flex items-center"
+              className="relative flex items-center"
               whileHover={{ scale: 1.02 }}
               transition={{ duration: 0.2 }}
             >
@@ -104,7 +113,7 @@ export function Navbar() {
               <Input
                 type="search"
                 placeholder="Buscar..."
-                className="pl-8 w-32 sm:w-40 lg:w-48 h-8 sm:h-9 bg-background/40 border-border/40 focus-visible:ring-2 focus-visible:ring-accent/50 focus-visible:border-accent/30 theme-transition"
+                className="pl-8 w-40 lg:w-48 h-8 sm:h-9 bg-background/40 border-border/40 focus-visible:ring-2 focus-visible:ring-accent/50 focus-visible:border-accent/30 theme-transition"
               />
             </motion.div>
 
@@ -126,27 +135,102 @@ export function Navbar() {
               </Link>
             </motion.div>
           </div>
-        </div>
 
-        {/* Menú móvil simplificado - Solo enlaces principales */}
-        <div className="lg:hidden flex items-center justify-center gap-4 py-2 border-t border-border/40 theme-transition">
-          {navItems.slice(0, 2).map((item) => (
-            <motion.div
-              key={item.href}
-              whileHover={{ y: -3 }}
-              transition={{
-                duration: 0.2,
-                ease: [0.4, 0, 0.2, 1],
-              }}
-            >
-              <Link
-                href={item.href}
-                className="text-xs text-brand/70 hover:text-accent transition-colors duration-200"
+          {/* Mobile: Botón hamburguesa */}
+          <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
+            <SheetTrigger asChild>
+              <motion.button
+                type="button"
+                aria-label="Abrir menú"
+                className="lg:hidden flex items-center justify-center h-9 w-9 rounded-md hover:bg-muted/50 transition-colors theme-transition"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                transition={{ duration: 0.2 }}
               >
-                {item.label}
-              </Link>
-            </motion.div>
-          ))}
+                <Menu className="h-5 w-5 text-foreground theme-transition" />
+              </motion.button>
+            </SheetTrigger>
+            <SheetContent
+              side="right"
+              className="w-[280px] sm:w-[320px] bg-background theme-transition"
+            >
+              <SheetHeader className="text-left pb-6 border-b border-border/40">
+                <SheetTitle className="flex items-center gap-2">
+                  <div className="relative h-8 w-8">
+                    <Image
+                      src="/logo.png"
+                      alt="Rich.art Logo"
+                      fill
+                      className="object-contain theme-transition"
+                    />
+                  </div>
+                  <span className="text-lg font-heading font-semibold text-brand theme-transition">
+                    Rich.art
+                  </span>
+                </SheetTitle>
+              </SheetHeader>
+
+              {/* Links de navegación */}
+              <nav className="flex flex-col gap-1 mt-6">
+                {navItems.map((item, index) => (
+                  <motion.div
+                    key={item.href}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{
+                      duration: 0.3,
+                      delay: index * 0.1,
+                      ease: [0.4, 0, 0.2, 1],
+                    }}
+                  >
+                    <Link
+                      href={item.href}
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className="flex items-center py-3 px-4 text-base text-foreground hover:bg-muted/50 rounded-md transition-colors duration-200 theme-transition"
+                    >
+                      {item.label}
+                    </Link>
+                  </motion.div>
+                ))}
+              </nav>
+
+              {/* Separador */}
+              <div className="my-6 border-t border-border/40 theme-transition" />
+
+              {/* Toggle theme y Avatar admin */}
+              <div className="flex flex-col gap-4">
+                {/* Toggle theme */}
+                <div className="flex items-center justify-between px-4 py-2">
+                  <span className="text-sm text-muted-foreground theme-transition">
+                    Tema
+                  </span>
+                  <ThemeToggle />
+                </div>
+
+                {/* Avatar admin */}
+                <motion.div
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <Link
+                    href="/dashboard"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="flex items-center gap-3 px-4 py-3 rounded-md hover:bg-muted/50 transition-colors duration-200 theme-transition"
+                  >
+                    <Avatar className="h-9 w-9 cursor-pointer hover:ring-2 hover:ring-accent/50 transition-all duration-200 theme-transition">
+                      <AvatarFallback className="bg-muted hover:bg-accent/10 transition-colors duration-200 theme-transition">
+                        <User className="h-5 w-5 text-muted-foreground theme-transition" />
+                      </AvatarFallback>
+                    </Avatar>
+                    <span className="text-sm font-medium text-foreground theme-transition">
+                      Admin
+                    </span>
+                  </Link>
+                </motion.div>
+              </div>
+            </SheetContent>
+          </Sheet>
         </div>
       </div>
     </motion.nav>
